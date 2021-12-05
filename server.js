@@ -26,9 +26,15 @@ app.get('/api/hello', function(req, res) {
   res.json({ greeting: 'hello API' });
 });
 
+app.post('api/shorturl', (req, res) => {
+  const url = req.body.url_input
+
+  res.json({ url: `${url}` })
+})
+
 app.get('/api/shorturl/:urlshort', (req, res) => {
 // take request (original URL) by POST
-  res.json({ "url": req.params.urlshort })
+  res.json({ url: req.params.urlshort })
 // check if DB already have the url already
 // if have => return json response with original url and shortened url eg. google, 1
 // else assign number/randomized string to that URL as object
