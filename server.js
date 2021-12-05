@@ -3,6 +3,21 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const app = express();
+const mongoose = require('mongoose')
+
+mongoose.connect(process.env.MONGO_URI)
+const Schema = mongoose.Schema
+
+// create mongoose schema for shortUrl
+const shortUrlSchema = new Schema({
+  // original url
+  original_url: { type: String, required: true },
+  // short url
+  short_url: Number
+})
+
+// create mongoose model for shortUrlSchema
+const ShortUrl = mongoose.model('ShortUrl', shortUrlSchema)
 
 // Basic Configuration
 const port = process.env.PORT || 3000;
@@ -27,20 +42,52 @@ app.get('/api/hello', function(req, res) {
 });
 
 app.post('/api/shorturl', (req, res) => {
+  // take request (original URL) by POST
   const url = req.body.url
-
-  res.json({ url: `${url}` })
+  // check if DB already have the url
+  async function findCreate(url, done) {
+    await ShortUrl.findOne({ original_url: url }, async (err, doc) => {
+      if (err) { // log error if error
+        return console.error(err)
+        // if the doc does not exist, create it
+      } else if (!doc) {
+        // var to hold new assigned short url
+        let newShort
+        // find latest doc and increment it's short url by 1
+        const latestDoc = await ShortUrl.find().sort({ _id: -1 }).limit(1)
+        if (!latestDoc) {
+          // if no docs exists the short url = 1
+          newShort = 1
+        } else {
+          // else increment it by 1
+          newShort = latestDoc.short_url + 1
+        }
+        // create new doc entry and assign doc values
+        const shortUrl = new ShortUrl({ original_url: url, short_url: newShort })
+        // save doc and return done if no error
+        shortUrl.save((err, data) => {
+          if (err) console.error(err)
+          res.json(shortUrl)
+        })
+      } else {
+        // if doc is found, return json
+        res.json(doc)
+        done(null, doc)
+      }
+    })
+  }
+  // if have => return json response with original url and shortened url eg. google, 1
+  // else assign number/randomized string to that URL as object
+  // save to mongoDB
+  // return json response with original url and shortened url eg. google, 1
 })
 
 app.get('/api/shorturl/:urlshort', (req, res) => {
-// take request (original URL) by POST
+  // GET shortUrl in url
+  // check DB for match
+  // if found => redirect to original url
+  // else => json response "no short url found for given input"
   res.json({ url: req.params.urlshort })
-// check if DB already have the url already
-// if have => return json response with original url and shortened url eg. google, 1
-// else assign number/randomized string to that URL as object
-// save to mongoDB
-// return json response with original url and shortened url eg. google, 1
-// profit
 })
 
 app.listen(port, function() {
