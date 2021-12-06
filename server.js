@@ -52,7 +52,7 @@ app.post('/api/shorturl', async (req, res) => {
     })
   }
   if (!findDoc) {
-    async function (done) {
+    async function myFunc (done) {
       let newShort
       const latestDoc = await ShortUrl.find().sort({ _id: -1 }).limit(1).exec((err, result) => {
         if (err) console.error(err)
