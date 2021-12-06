@@ -69,8 +69,8 @@ app.post('/api/shorturl', (req, res) => {
       //})
     }
   } else { // if the doc is present
-    res.json(findDoc)
-  }*/
+    res.json(result)
+  }
   // if have => return json response with original url and shortened url eg. google, 1
   // else assign number/randomized string to that URL as object
   // save to mongoDB
