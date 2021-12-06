@@ -64,6 +64,7 @@ app.post('/api/shorturl', async (req, res) => {
       shortUrl.save((err, data) => {
         if (err) console.error(err)
         done(null, data)
+        res.json(shortUrl)
       })
     }
   } else { // if the doc is present
