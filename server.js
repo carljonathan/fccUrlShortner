@@ -41,40 +41,33 @@ app.get('/api/hello', function(req, res) {
   res.json({ greeting: 'hello API' });
 });
 
-app.post('/api/shorturl', (req, res) => {
+app.post('/api/shorturl', async (req, res) => {
   // take request (original URL) by POST
   const url = req.body.url
   // check if DB already have the url
-  async function findCreate(url, done) {
+  const findDoc = async (url, done) => {
     await ShortUrl.findOne({ original_url: url }, async (err, doc) => {
-      if (err) { // log error if error
-        return console.error(err)
-        // if the doc does not exist, create it
-      } else if (!doc) {
-        // var to hold new assigned short url
-        let newShort
-        // find latest doc and increment it's short url by 1
-        const latestDoc = await ShortUrl.find().sort({ _id: -1 }).limit(1)
-        if (!latestDoc) {
-          // if no docs exists the short url = 1
-          newShort = 1
-        } else {
-          // else increment it by 1
-          newShort = latestDoc.short_url + 1
-        }
-        // create new doc entry and assign doc values
-        const shortUrl = new ShortUrl({ original_url: url, short_url: newShort })
-        // save doc and return done if no error
-        shortUrl.save((err, data) => {
-          if (err) console.error(err)
-          res.json(shortUrl)
-        })
-      } else {
-        // if doc is found, return json
-        res.json(doc)
-        done(null, doc)
-      }
+      if (err) return console.error(err) // log error if error
+      done(null, doc)
     })
+  }
+  if (!findDoc) {
+    async function (done) {
+      let newShort
+      const latestDoc = await ShortUrl.find().sort({ _id: -1 }).limit(1).exec((err, result) => {
+        if (err) console.error(err)
+        done(null, result)
+      })
+      if (!latestDoc) newShort = 1
+      newShort = latestDoc.shortUrl++
+      const shortUrl = new ShortUrl({ original_url: url, short_url: newShort })
+      shortUrl.save((err, data) => {
+        if (err) console.error(err)
+        done(null, data)
+      })
+    }
+  } else { // if the doc is present
+    res.json(findDoc)
   }
   // if have => return json response with original url and shortened url eg. google, 1
   // else assign number/randomized string to that URL as object
