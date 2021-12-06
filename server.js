@@ -44,15 +44,15 @@ app.get('/api/hello', function(req, res) {
 app.post('/api/shorturl', async (req, res) => {
   // take request (original URL) by POST
   const url = req.body.url
-
+  let result
   // check if DB already have the url
-  const findDoc = async (url, done) => {
-    await ShortUrl.findOne({ original_url: url }, async (err, doc) => {
+  async findFunc(url, done) => {
+    result = await ShortUrl.findOne({ original_url: url }, async (err, doc) => {
       if (err) return console.error(err) // log error if error
       done(null, doc)
     })
   }
-  res.json(`result: ${findDoc}`)
+  res.json(`result: ${result}`)
   /*
   if (!findDoc) {
     async function myFunc (done) {
