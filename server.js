@@ -52,7 +52,7 @@ app.post('/api/shorturl', async (req, res) => {
       done(null, doc)
     })
   }
-  res.json(findDoc)
+  res.json(`result: ${findDoc}`)
   /*
   if (!findDoc) {
     async function myFunc (done) {
