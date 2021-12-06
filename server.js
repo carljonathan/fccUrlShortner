@@ -46,7 +46,7 @@ app.post('/api/shorturl', async (req, res) => {
   const url = req.body.url
   let result
   // check if DB already have the url
-  async findFunc(url, done) => {
+  async function findFunc (url, done) {
     result = await ShortUrl.findOne({ original_url: url }, async (err, doc) => {
       if (err) return console.error(err) // log error if error
       done(null, doc)
