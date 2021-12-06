@@ -51,6 +51,7 @@ app.post('/api/shorturl', async (req, res) => {
       done(null, doc)
     })
   }
+  console.log(findDoc)
   if (!findDoc) {
     async function myFunc (done) {
       let newShort
