@@ -41,7 +41,7 @@ app.get('/api/hello', function(req, res) {
   res.json({ greeting: 'hello API' });
 });
 
-app.post('/api/shorturl', async (req, res) => {
+app.post('/api/shorturl', (req, res) => {
   // take request (original URL) by POST
   const url = req.body.url
   let result
@@ -52,10 +52,8 @@ app.post('/api/shorturl', async (req, res) => {
       done(null, doc)
     })
   }
-  res.json(`result: ${result}`)
-  /*
-  if (!findDoc) {
-    async function myFunc (done) {
+  if (!result) {
+    async function findLatestAndCreate (done) {
       let newShort
       const latestDoc = await ShortUrl.find().sort({ _id: -1 }).limit(1).exec((err, result) => {
         if (err) console.error(err)
@@ -64,11 +62,11 @@ app.post('/api/shorturl', async (req, res) => {
       if (!latestDoc) newShort = 1
       newShort = latestDoc.shortUrl++
       const shortUrl = new ShortUrl({ original_url: url, short_url: newShort })
-      shortUrl.save((err, data) => {
+      /*shortUrl.save((err, data) => {
         if (err) console.error(err)
-        done(null, data)
-        res.json(shortUrl)
-      })
+        done(null, data)*/
+      res.json(shortUrl)
+      //})
     }
   } else { // if the doc is present
     res.json(findDoc)
