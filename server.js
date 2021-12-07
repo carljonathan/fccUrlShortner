@@ -59,13 +59,16 @@ app.post('/api/shorturl', (req, res) => {
         if (err) console.error(err)
         done(null, result)
       })
+      console.log(`latestDoc: ${latestDoc}`)
       if (!latestDoc) newShort = 1
       newShort = latestDoc.shortUrl++
-      const shortUrl = new ShortUrl({ original_url: url, short_url: newShort })
+      console.log(`newShort: ${newShort}`)
+      res.json({ latestDoc: latestDoc, newShort: newShort })
+      //const shortUrl = new ShortUrl({ original_url: url, short_url: newShort })
       /*shortUrl.save((err, data) => {
         if (err) console.error(err)
         done(null, data)*/
-      res.json(shortUrl)
+      //res.json(shortUrl)
       //})
     }
   } else { // if the doc is present
