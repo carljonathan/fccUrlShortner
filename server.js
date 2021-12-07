@@ -41,17 +41,37 @@ app.get('/api/hello', function(req, res) {
   res.json({ greeting: 'hello API' });
 });
 
-app.post('/api/shorturl', (req, res) => {
+app.post('/api/shorturl/newUrl', async (req, res) => {
   // take request (original URL) by POST
   const url = req.body.url
-  let result
-  // check if DB already have the url
-  async function findFunc (url, done) {
-    result = await ShortUrl.findOne({ original_url: url }, async (err, doc) => {
-      if (err) return console.error(err) // log error if error
-      done(null, doc)
-    })
+
+  // try to find existing Url in db
+  try {
+    const existingUrl = await ShortUrl.findOne({ original_url: url })
+    // if the url is not existing in the db, create it
+    if (!existingUrl) {
+      let newUrlShort
+      const latestEntry = await ShortUrl.find().sort({ _id: -1 }).limit(1).exec()
+      if (!latestEntry) {
+        newUrlShort = 1
+      } else {
+        newUrlShort = latestEntry.short_url++
+      }
+      const shortUrl = new ShortUrl({
+        original_url: url,
+        short_url: newUrlShort
+      })
+      await shortUrl.save()
+      res.json(shortUrl)
+    } else {
+      res.json(existingUrl)
+    }
   }
+  // catch error
+  catch (err) {
+    console.error(err)
+  }
+  /*
   if (!result) {
     async function findLatestAndCreate (done) {
       let newShort
@@ -65,15 +85,15 @@ app.post('/api/shorturl', (req, res) => {
       console.log(`newShort: ${newShort}`)
       res.json({ latestDoc: latestDoc, newShort: newShort })
       //const shortUrl = new ShortUrl({ original_url: url, short_url: newShort })
-      /*shortUrl.save((err, data) => {
+      shortUrl.save((err, data) => {
         if (err) console.error(err)
-        done(null, data)*/
+        done(null, data)
       //res.json(shortUrl)
       //})
     }
   } else { // if the doc is present
     res.json(result)
-  }
+  }*/
   // if have => return json response with original url and shortened url eg. google, 1
   // else assign number/randomized string to that URL as object
   // save to mongoDB
