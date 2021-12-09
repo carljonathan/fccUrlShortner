@@ -73,10 +73,6 @@ app.post('/api/shorturl/newUrl', async (req, res) => {
     console.error(err)
     res.status(500).json('Server Error.')
   }
-  // if have => return json response with original url and shortened url eg. google, 1
-  // else assign number/randomized string to that URL as object
-  // save to mongoDB
-  // return json response with original url and shortened url eg. google, 1
 })
 
 app.get('/api/shorturl/:urlshort', (req, res) => {
