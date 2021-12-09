@@ -42,7 +42,7 @@ app.get('/api/hello', function(req, res) {
   res.json({ greeting: 'hello API' });
 });
 
-app.post('/api/shorturl/newUrl', async (req, res) => {
+app.post('/api/shorturl', async (req, res) => {
   // take request (original URL) by POST
   const url = req.body.url
   console.log(url)
