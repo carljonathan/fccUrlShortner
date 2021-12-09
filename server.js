@@ -53,6 +53,7 @@ app.post('/api/shorturl', async (req, res) => {
     // if the url is n the db, return it as json
     if (existingUrl) {
       res.json({ original_url: existingUrl.original_url, short_url: existingUrl.short_url })
+      console.log(typeof existingUrl.short_url)
       // if the url does not already exisit, create it
     } else {
       // create var to hold shortened url as number
