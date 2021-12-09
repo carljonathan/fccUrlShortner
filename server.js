@@ -67,7 +67,7 @@ app.post('/api/shorturl', async (req, res) => {
         // if it doesn't exist, assign 1 as the first entry's short url
         newUrlShort = 1
       }
-      if (!NaN(newUrlShort)) {
+      if (!isNaN(newUrlShort)) {
         // create new entry
         const shortUrl = new ShortUrl({
           original_url: url,
