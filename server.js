@@ -53,7 +53,6 @@ app.post('/api/shorturl', async (req, res) => {
     // if the url is n the db, return it as json
     if (existingUrl) {
       res.json({ original_url: existingUrl.original_url, short_url: existingUrl.short_url })
-      console.log(typeof existingUrl.short_url)
       // if the url does not already exisit, create it
     } else {
       // create var to hold shortened url as number
@@ -62,11 +61,11 @@ app.post('/api/shorturl', async (req, res) => {
       const latestEntry = await ShortUrl.find().sort({ _id: -1 }).limit(1)
       // if it exists, take it's shortened url and ++
       if (latestEntry) {
-        console.log(typeof latestEntry.short_url)
-        newUrlShort = latestEntry.short_url += 1
+        newUrlShort = latestEntry.short_url++
+      } else {
+        // if it doesn't exist, assign 1 as the first entry's short url
+        newUrlShort = 1
       }
-      // if it doesn't exist, assign 1 as the first entry's short url
-      newUrlShort = 1
       // create new entry
       const shortUrl = new ShortUrl({
         original_url: url,
