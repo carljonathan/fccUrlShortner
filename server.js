@@ -11,7 +11,7 @@ mongoose.connect(process.env.MONGO_URI)
 const port = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(express.json())
+
 // middleware to handle POST requests and read the body tag
 app.use(bodyParser.urlencoded({ extended: false }))
 
@@ -45,6 +45,7 @@ app.get('/api/hello', function(req, res) {
 app.post('/api/shorturl/newUrl', async (req, res) => {
   // take request (original URL) by POST
   const url = req.body.url
+  console.log(url)
 
   // try to find existing Url in db
   try {
