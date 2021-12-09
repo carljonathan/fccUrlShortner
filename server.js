@@ -56,12 +56,11 @@ app.post('/api/shorturl', async (req, res) => {
     } else {
       let newUrlShort
       const latestEntry = await ShortUrl.find().sort({ _id: -1 }).limit(1)
-      console.log(`log latestEntry: ${latestEntry}`)
-      if (!latestEntry) {
-        newUrlShort = 1
-      } else {
-        newUrlShort = latestEntry.short_url++
+      console.log(`log latestEntry: ${latestEntry} 111111`)
+      if (latestEntry) {
+        newUrlShort = latestEntry.short_url += 1
       }
+      newUrlShort = 1
       const shortUrl = new ShortUrl({
         original_url: url,
         short_url: newUrlShort
