@@ -62,19 +62,24 @@ app.post('/api/shorturl', async (req, res) => {
       // if it exists, take it's shortened url and ++
       if (latestEntry) {
         newUrlShort = latestEntry.short_url++
+        console.log(latestEntry.short_url, latestEntry.short_url++)
       } else {
         // if it doesn't exist, assign 1 as the first entry's short url
         newUrlShort = 1
       }
-      // create new entry
-      const shortUrl = new ShortUrl({
-        original_url: url,
-        short_url: newUrlShort
-      })
-      // save it
-      await shortUrl.save()
-      // return the new entry
-      res.json({ original_url: shortUrl.original_url, short_url: shortUrl.short_url })
+      if (!NaN(newUrlShort)) {
+        // create new entry
+        const shortUrl = new ShortUrl({
+          original_url: url,
+          short_url: newUrlShort
+        })
+        // save it
+        await shortUrl.save()
+        // return the new entry
+        res.json({ original_url: shortUrl.original_url, short_url: shortUrl.short_url })
+      } else {
+        res.status(500).json('Short URL may not be NaN')
+      }
     }
   } catch (err) { // catch error, log it and return it.
     console.error(err)
