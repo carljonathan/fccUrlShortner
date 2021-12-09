@@ -45,30 +45,37 @@ app.get('/api/hello', function(req, res) {
 app.post('/api/shorturl', async (req, res) => {
   // take request (original URL) by POST
   const url = req.body.url
-  console.log(url)
 
-  // try to find existing Url in db
+  // try to find existing Url in db or create a new entry
   try {
+    // check if the entry already exisits in the db
     const existingUrl = await ShortUrl.findOne({ original_url: url })
-    // if the url is not existing in the db, create it
+    // if the url is n the db, return it as json
     if (existingUrl) {
       res.json({ original_url: existingUrl.original_url, short_url: existingUrl.short_url })
+      // if the url does not already exisit, create it
     } else {
+      // create var to hold shortened url as number
       let newUrlShort
+      // try to get the latest entry in the db
       const latestEntry = await ShortUrl.find().sort({ _id: -1 }).limit(1)
-      console.log(`log latestEntry: ${latestEntry} 111111`)
+      // if it exists, take it's shortened url and ++
       if (latestEntry) {
         newUrlShort = latestEntry.short_url += 1
       }
+      // if it doesn't exist, assign 1 as the first entry's short url
       newUrlShort = 1
+      // create new entry
       const shortUrl = new ShortUrl({
         original_url: url,
         short_url: newUrlShort
       })
+      // save it
       await shortUrl.save()
-      res.json(shortUrl)
+      // return the new entry
+      res.json({ original_url: shortUrl.original_url, short_url: shortUrl.short_url })
     }
-  } catch (err) { // catch error
+  } catch (err) { // catch error, log it and return it.
     console.error(err)
     res.status(500).json('Server Error.')
   }
