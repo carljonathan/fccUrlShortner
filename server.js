@@ -60,13 +60,13 @@ app.post('/api/shorturl', async (req, res) => {
       // try to get the latest entry in the db
       const latestEntry = await ShortUrl.find().sort({ _id: -1 }).limit(1)
       // if it exists, take it's shortened url and ++
-      console.log('1:', latestEntry, '2:', latestEntry[1].short_url, '3:', latestEntry[1].short_url += 1)
       if (latestEntry) {
-        newUrlShort = latestEntry.short_url++
+        newUrlShort = latestEntry[0].short_url += 1
       } else {
         // if it doesn't exist, assign 1 as the first entry's short url
         newUrlShort = 1
       }
+      // make sure the new url short is a number
       if (!isNaN(newUrlShort)) {
         // create new entry
         const shortUrl = new ShortUrl({
