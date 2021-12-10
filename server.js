@@ -62,7 +62,7 @@ app.post('/api/shorturl', async (req, res) => {
       // if it exists, take it's shortened url and ++
       if (latestEntry) {
         newUrlShort = latestEntry.short_url++
-        console.log(latestEntry.short_url, latestEntry.short_url++)
+        console.log(latestEntry)
       } else {
         // if it doesn't exist, assign 1 as the first entry's short url
         newUrlShort = 1
