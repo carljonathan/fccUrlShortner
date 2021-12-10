@@ -43,6 +43,7 @@ app.get('/api/hello', function(req, res) {
 });
 
 app.post('/api/shorturl', async (req, res) => {
+  // TODO - MAKE SURE URL IS VALID
   // take request (original URL) by POST
   const url = req.body.url
 
@@ -87,12 +88,18 @@ app.post('/api/shorturl', async (req, res) => {
   }
 })
 
-app.get('/api/shorturl/:urlshort', (req, res) => {
+app.get('/api/shorturl/:urlshort', async (req, res) => {
   // GET shortUrl in url
+  const shortUrl = req.params.urlshort
   // check DB for match
+  const originalUrl = await ShortUrl.findOne({ short_url: shortUrl })
   // if found => redirect to original url
-  // else => json response "no short url found for given input"
-  res.json({ url: req.params.urlshort })
+  if (originalUrl) {
+    res.redirect(301, originalUrl)
+  } else {
+      // else => json response "no short url found for given input"
+    res.status(500).json('Shortened URL not found, please try another')
+  }
 })
 
 app.listen(port, function() {
