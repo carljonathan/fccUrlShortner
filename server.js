@@ -60,7 +60,7 @@ app.post('/api/shorturl', async (req, res) => {
       // try to get the latest entry in the db
       const latestEntry = await ShortUrl.find().sort({ _id: -1 }).limit(1)
       // if it exists, take it's shortened url and ++
-      console.log('1:', latestEntry, '2:', latestEntry[0].short_url, '3:', latestEntry[0].short_url++)
+      console.log('1:', latestEntry, '2:', latestEntry[0].short_url, '3:', latestEntry[0].short_url += 1)
       if (latestEntry) {
         newUrlShort = latestEntry.short_url++
       } else {
