@@ -99,7 +99,8 @@ app.get('/api/shorturl/:urlshort', async (req, res) => {
     console.log('original url', originalUrl.original_url)
     // if found => redirect to original url
     if (originalUrl) {
-      res.redirect(originalUrl)
+      console.log('inside if originalUrl, before redirect')
+      res.redirect(originalUrl.original_url)
     } else {
       // else => json response "no short url found for given input"
       res.status(500).json('Shortened URL not found, please try another')
