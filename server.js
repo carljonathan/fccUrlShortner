@@ -91,11 +91,12 @@ app.post('/api/shorturl', async (req, res) => {
 app.get('/api/shorturl/:urlshort', async (req, res) => {
   // GET shortUrl in url
   const shortUrl = req.params.urlshort
-  console.log(shortUrl)
-  // check DB for match
-  const originalUrl = await ShortUrl.findOne({ short_url: shortUrl })
-  console.log(originalUrl.original_url)
+  console.log('short url', shortUrl)
   try {
+    // check DB for match
+    console.log('inside catch, before await func')
+    const originalUrl = await ShortUrl.findOne({ short_url: shortUrl })
+    console.log('original url', originalUrl.original_url)
     // if found => redirect to original url
     if (originalUrl) {
       res.redirect(originalUrl)
