@@ -95,7 +95,7 @@ app.get('/api/shorturl/:urlshort', async (req, res) => {
   // check DB for match
   const originalUrl = await ShortUrl.findOne({ short_url: shortUrl })
   console.log(originalUrl.original_url)
-  //res.json({ 1: originalUrl, 2: originalUrl.original_url })
+  res.json({ org: originalUrl, short: originalUrl.original_url })
   /*
   // if found => redirect to original url
   if (originalUrl) {
