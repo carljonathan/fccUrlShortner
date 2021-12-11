@@ -95,15 +95,13 @@ app.get('/api/shorturl/:urlshort', async (req, res) => {
   // check DB for match
   const originalUrl = await ShortUrl.findOne({ short_url: shortUrl })
   console.log(originalUrl.original_url)
-  res.json({ org: originalUrl, short: originalUrl.original_url })
-  /*
   // if found => redirect to original url
   if (originalUrl) {
-    res.redirect(301, originalUrl)
+    res.redirect(originalUrl)
   } else {
     // else => json response "no short url found for given input"
     res.status(500).json('Shortened URL not found, please try another')
-  }*/
+  }
 })
 
 app.listen(port, function() {
