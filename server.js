@@ -90,25 +90,20 @@ app.post('/api/shorturl', async (req, res) => {
 
 app.get('/api/shorturl/:input?', async (req, res) => {
   // GET shortUrl in url
-  try {
-    console.log('1', req.params.input)
-    const shortUrl = req.params.input
-    console.log('short url', shortUrl, 'input', req.params.input)
-    // check DB for match
-    console.log('inside catch, before await func')
-    const originalUrl = await ShortUrl.findOne({ short_url: req.params.input })
-    console.log('original url', originalUrl.original_url)
-    // if found => redirect to original url
-    if (originalUrl) {
-      console.log('inside if originalUrl, before redirect')
-      return res.redirect(originalUrl.original_url)
-    } else {
-      // else => json response "no short url found for given input"
-      return res.status(400).json('Shortened URL not found, please try another')
-    }
-  } catch (err) {
-    console.error(err)
-    res.status(500).json('Server Error.')
+  console.log('1', req.params.input)
+  const shortUrl = req.params.input
+  console.log('short url', shortUrl, 'input', req.params.input)
+  // check DB for match
+  console.log('inside catch, before await func')
+  const originalUrl = await ShortUrl.findOne({ short_url: req.params.input })
+  console.log('original url', originalUrl.original_url)
+  // if found => redirect to original url
+  if (originalUrl) {
+    console.log('inside if originalUrl, before redirect')
+    return res.redirect(originalUrl.original_url)
+  } else {
+    // else => json response "no short url found for given input"
+    return res.status(400).json('Shortened URL not found, please try another')
   }
 })
 
