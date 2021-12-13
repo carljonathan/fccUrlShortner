@@ -88,10 +88,11 @@ app.post('/api/shorturl', async (req, res) => {
   }
 })
 
-app.get('/api/shorturl/:urlshort', async (req, res) => {
+app.get('/api/shorturl/:input', async (req, res) => {
   // GET shortUrl in url
-  const shortUrl = req.params.urlshort
-  console.log('short url', shortUrl, 'input', req.params.urlshort)
+  console.log('1', req.params.input)
+  const shortUrl = req.params.input
+  console.log('short url', shortUrl, 'input', req.params.input)
   try {
     // check DB for match
     console.log('inside catch, before await func')
