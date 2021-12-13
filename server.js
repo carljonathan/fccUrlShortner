@@ -88,7 +88,7 @@ app.post('/api/shorturl', async (req, res) => {
   }
 })
 
-app.get('/api/shorturl/:input', async (req, res) => {
+app.get('/api/shorturl/:input?', async (req, res) => {
   // GET shortUrl in url
   try {
     console.log('1', req.params.input)
