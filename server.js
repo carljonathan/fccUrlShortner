@@ -89,10 +89,6 @@ app.post('/api/shorturl', async (req, res) => {
 })
 
 app.get('/api/shorturl/:input?', async (req, res) => {
-  res.json({ reply: req.params.input })
-  /*
-  // GET shortUrl in url
-  const shortUrl = req.params.input
   // check DB for match
   const originalUrl = await ShortUrl.findOne({ short_url: req.params.input })
   // if found => redirect to original url
@@ -101,7 +97,7 @@ app.get('/api/shorturl/:input?', async (req, res) => {
   } else {
     // else => json response "no short url found for given input"
     return res.status(400).json('Shortened URL not found, please try another')
-  }*/
+  }
 })
 
 app.listen(port, function() {
