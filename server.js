@@ -49,50 +49,49 @@ app.post('/api/shorturl', async (req, res) => {
   const url = req.body.url
   try {
     const urlOk = new URL(url)
+    // try to find existing Url in db or create a new entry
+    try {
+      // check if the entry already exisits in the db
+      const existingUrl = await ShortUrl.findOne({ original_url: urlOk })
+      // if the url is n the db, return it as json
+      if (existingUrl) {
+        res.json({ original_url: existingUrl.original_url, short_url: existingUrl.short_url })
+        // if the url does not already exisit, create it
+      } else {
+        // create var to hold shortened url as number
+        let newUrlShort
+        // try to get the latest entry in the db
+        const latestEntry = await ShortUrl.find().sort({ _id: -1 }).limit(1)
+        // if it exists, take it's shortened url and ++
+        if (latestEntry) {
+          newUrlShort = latestEntry[0].short_url += 1
+        } else {
+          // if it doesn't exist, assign 1 as the first entry's short url
+          newUrlShort = 1
+        }
+        // make sure the new url short is a number
+        if (!isNaN(newUrlShort)) {
+          // create new entry
+          const shortUrl = new ShortUrl({
+            original_url: urlOk,
+            short_url: newUrlShort
+          })
+          // save it
+          await shortUrl.save()
+          // return the new entry
+          res.json({ original_url: shortUrl.original_url, short_url: shortUrl.short_url })
+        } else {
+          res.status(500).json('Short URL may not be NaN')
+        }
+      }
+    } catch (err) { // catch error, log it and return it.
+      console.error(err)
+      res.status(500).json('Server Error.')
+    }
   } catch (err) {
     console.error(err)
     return res.json({ error: 'invalid url' })
-  }
-
-  // try to find existing Url in db or create a new entry
-  try {
-    // check if the entry already exisits in the db
-    const existingUrl = await ShortUrl.findOne({ original_url: url })
-    // if the url is n the db, return it as json
-    if (existingUrl) {
-      res.json({ original_url: existingUrl.original_url, short_url: existingUrl.short_url })
-      // if the url does not already exisit, create it
-    } else {
-      // create var to hold shortened url as number
-      let newUrlShort
-      // try to get the latest entry in the db
-      const latestEntry = await ShortUrl.find().sort({ _id: -1 }).limit(1)
-      // if it exists, take it's shortened url and ++
-      if (latestEntry) {
-        newUrlShort = latestEntry[0].short_url += 1
-      } else {
-        // if it doesn't exist, assign 1 as the first entry's short url
-        newUrlShort = 1
-      }
-      // make sure the new url short is a number
-      if (!isNaN(newUrlShort)) {
-        // create new entry
-        const shortUrl = new ShortUrl({
-          original_url: url,
-          short_url: newUrlShort
-        })
-        // save it
-        await shortUrl.save()
-        // return the new entry
-        res.json({ original_url: shortUrl.original_url, short_url: shortUrl.short_url })
-      } else {
-        res.status(500).json('Short URL may not be NaN')
-      }
-    }
-  } catch (err) { // catch error, log it and return it.
-    console.error(err)
-    res.status(500).json('Server Error.')
-  }
+}
 })
 
 app.get('/api/shorturl/:short_url?', async (req, res) => {
