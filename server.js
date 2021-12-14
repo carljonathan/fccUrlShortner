@@ -88,15 +88,22 @@ app.post('/api/shorturl', async (req, res) => {
   }
 })
 
-app.get('/api/shorturl/:input?', async (req, res) => {
+app.get('/api/shorturl/:short_url?', async (req, res) => {
   // check DB for match
-  const originalUrl = await ShortUrl.findOne({ short_url: req.params.input })
-  // if found => redirect to original url
-  if (originalUrl) {
-    return res.redirect(originalUrl.original_url)
-  } else {
-    // else => json response "no short url found for given input"
-    return res.status(400).json('Shortened URL not found, please try another')
+  console.log('1', req.params.short_url)
+  try {
+    const originalUrl = await ShortUrl.findOne({ short_url: req.params.short_url })
+    console.log('2', originalUrl.original_url)
+    // if found => redirect to original url
+    if (originalUrl) {
+      return res.json({ result: originalUrl.original_url })
+    } else {
+      // else => json response "no short url found for given input"
+      return res.status(400).json('Shortened URL not found, please try another')
+    }
+  } catch (err) {
+    console.error(err)
+    res.status(500).json('Server Error')
   }
 })
 
