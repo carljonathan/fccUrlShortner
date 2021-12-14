@@ -4,6 +4,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const app = express();
 const mongoose = require('mongoose')
+const URL = require('url')
 
 mongoose.connect(process.env.MONGO_URI)
 
@@ -46,6 +47,12 @@ app.post('/api/shorturl', async (req, res) => {
   // TODO - MAKE SURE URL IS VALID
   // take request (original URL) by POST
   const url = req.body.url
+  try {
+    const urlOk = new URL(url)
+  } catch (err) {
+    console.error(err)
+    return res.json({ error: 'invalid url' })
+  }
 
   // try to find existing Url in db or create a new entry
   try {
@@ -89,11 +96,10 @@ app.post('/api/shorturl', async (req, res) => {
 })
 
 app.get('/api/shorturl/:short_url?', async (req, res) => {
-  // check DB for match
-  console.log('1', req.params.short_url)
+  // try to find dbentry and catch if error
   try {
+    // check db for entry with matching short url
     const originalUrl = await ShortUrl.findOne({ short_url: req.params.short_url })
-    console.log('2', originalUrl.original_url)
     // if found => redirect to original url
     if (originalUrl) {
       return res.redirect(originalUrl.original_url)
@@ -101,7 +107,7 @@ app.get('/api/shorturl/:short_url?', async (req, res) => {
       // else => json response "no short url found for given input"
       return res.status(400).json('Shortened URL not found, please try another')
     }
-  } catch (err) {
+  } catch (err) { // catch error, log it and return status 500
     console.error(err)
     res.status(500).json('Server Error')
   }
