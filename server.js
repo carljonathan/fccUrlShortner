@@ -63,7 +63,7 @@ app.post('/api/shorturl', async (req, res) => {
     // try to find existing Url in db or create a new entry
     try {
       // check if the entry already exisits in the db
-      const existingUrl = await ShortUrl.findOne({ original_url: url })
+      const existingUrl = await ShortUrl.findOne({ original_url: input })
       // if the url is n the db, return it as json
       if (existingUrl) {
         res.json({ original_url: existingUrl.original_url, short_url: existingUrl.short_url })
@@ -84,7 +84,7 @@ app.post('/api/shorturl', async (req, res) => {
         if (!isNaN(newUrlShort)) {
           // create new entry
           const shortUrl = new ShortUrl({
-            original_url: url,
+            original_url: input,
             short_url: newUrlShort
           })
           // save it
