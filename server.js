@@ -57,7 +57,7 @@ app.post('/api/shorturl', async (req, res) => {
   }
 
   if (isValidUrl(input) === false) {
-    res.json({ error: "invalid url" })
+    res.json({ error: 'invalid url' })
   } else {
     // try to find existing Url in db or create a new entry
     try {
