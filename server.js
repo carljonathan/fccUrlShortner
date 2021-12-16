@@ -47,17 +47,17 @@ app.post('/api/shorturl', async (req, res) => {
   // TODO - MAKE SURE URL IS VALID
   // take request (original URL) by POST
   const url = req.body.url
-  const isValidUrl = (a) => {
+  function isValidUrl(s) {
     try {
-      new URL(url)
-      return true
+      new URL(s);
+      return true;
     } catch (err) {
-      console.error(err)
-      return false
+      console.error(err);
+      return false;
     }
   }
 
-  if (!isValidUrl) {
+  if (isValidUrl(url) === false) {
     res.json({ error: "invalid url" })
   } else {
     // try to find existing Url in db or create a new entry
