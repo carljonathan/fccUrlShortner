@@ -4,7 +4,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const app = express();
 const mongoose = require('mongoose')
-const URL = require('url')
+const url = require('url')
 
 mongoose.connect(process.env.MONGO_URI)
 
@@ -46,7 +46,7 @@ app.get('/api/hello', function(req, res) {
 app.post('/api/shorturl', async (req, res) => {
   // TODO - MAKE SURE URL IS VALID
   // take request (original URL) by POST
-  const url = req.body.url
+  const input = req.body.url
   function isValidUrl(s) {
     try {
       new URL(s);
@@ -57,7 +57,7 @@ app.post('/api/shorturl', async (req, res) => {
     }
   }
 
-  if (isValidUrl(url) === false) {
+  if (isValidUrl(input) === false) {
     res.json({ error: "invalid url" })
   } else {
     // try to find existing Url in db or create a new entry
