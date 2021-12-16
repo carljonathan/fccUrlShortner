@@ -52,7 +52,6 @@ app.post('/api/shorturl', async (req, res) => {
       new URL(s);
       return true;
     } catch (err) {
-      console.error(err);
       return false;
     }
   }
