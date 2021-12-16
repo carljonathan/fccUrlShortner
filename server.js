@@ -47,12 +47,23 @@ app.post('/api/shorturl', async (req, res) => {
   // TODO - MAKE SURE URL IS VALID
   // take request (original URL) by POST
   const url = req.body.url
-  try {
-    const urlOk = new URL(url)
+  const isValidUrl = (a) => {
+    try {
+      new URL(url)
+      return true
+    } catch (err) {
+      console.error(err)
+      return false
+    }
+  }
+
+  if (!isValidUrl) {
+    res.json({ error: "invalid url" })
+  } else {
     // try to find existing Url in db or create a new entry
     try {
       // check if the entry already exisits in the db
-      const existingUrl = await ShortUrl.findOne({ original_url: urlOk })
+      const existingUrl = await ShortUrl.findOne({ original_url: url })
       // if the url is n the db, return it as json
       if (existingUrl) {
         res.json({ original_url: existingUrl.original_url, short_url: existingUrl.short_url })
@@ -73,7 +84,7 @@ app.post('/api/shorturl', async (req, res) => {
         if (!isNaN(newUrlShort)) {
           // create new entry
           const shortUrl = new ShortUrl({
-            original_url: urlOk,
+            original_url: url,
             short_url: newUrlShort
           })
           // save it
@@ -88,10 +99,7 @@ app.post('/api/shorturl', async (req, res) => {
       console.error(err)
       res.status(500).json('Server Error.')
     }
-  } catch (err) {
-    console.error(err)
-    return res.json({ error: 'invalid url' })
-}
+  }
 })
 
 app.get('/api/shorturl/:short_url?', async (req, res) => {
