@@ -49,10 +49,13 @@ app.post('/api/shorturl', async (req, res) => {
   const input = req.body.url
   function isValidUrl(s) {
     try {
-      new URL(s);
-      return true;
+      const myUrl = new URL(s)
+      if (myUrl.protocol) {
+        return true
+      }
+      return false
     } catch (err) {
-      return false;
+      return false
     }
   }
 
