@@ -54,7 +54,7 @@ app.post('/api/shorturl', async (req, res) => {
       if (myUrl.protocol && myUrl.hostname.includes('.')) {
         console.log(myUrl.hostname.indexOf('.'))
         if (myUrl.hostname.indexOf('.') === 3) {
-          const sliced = myUrl.slice(0, 3)
+          const sliced = myUrl.hostname.slice(0, 3)
           console.log(sliced)
           if (sliced.includes('www')) {
             return true
