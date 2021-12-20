@@ -50,7 +50,7 @@ app.post('/api/shorturl', async (req, res) => {
   function isValidUrl(s) {
     try {
       const myUrl = new URL(s)
-      if (myUrl.protocol && myUrl.host) {
+      if (myUrl.protocol && myUrl.hostname.includes('.')) {
         return true
       }
       return false
