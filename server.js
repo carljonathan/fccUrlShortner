@@ -49,19 +49,21 @@ app.post('/api/shorturl', async (req, res) => {
   const input = req.body.url
   function isValidUrl(s) {
     try {
-      const myUrl = new URL(s)
-      console.log('myurl:', myUrl)
-      if (myUrl.protocol && myUrl.hostname.includes('.')) {
-        console.log(myUrl.hostname.indexOf('.'))
-        if (myUrl.hostname.indexOf('.') === 3) {
-          const sliced = myUrl.hostname.slice(0, 3)
-          console.log(sliced)
-          if (sliced.includes('www')) {
-            return true
+      if (s.slice(0, indexOf('/') + 2).includes('//')) {
+        const myUrl = new URL(s)
+        if (myUrl.protocol && myUrl.hostname.includes('.')) {
+          if (myUrl.hostname.indexOf('.') === 3) {
+            const sliced = myUrl.hostname.slice(0, 3)
+            if (sliced.includes('www')) {
+              return true
+            }
+            return false
+          } else if () {
+
           }
-          return false
+          return true
         }
-        return true
+        return false
       }
       return false
     } catch (err) {
