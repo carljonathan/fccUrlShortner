@@ -44,15 +44,20 @@ app.get('/api/hello', function(req, res) {
 });
 
 app.post('/api/shorturl', async (req, res) => {
-  // TODO - MAKE SURE URL IS VALID
   // take request (original URL) by POST
   const input = req.body.url
+  // define function to check that url string input has a valid format
   function isValidUrl(s) {
     try {
+      // make sure that the protocol is followed by '//'
       if (s.slice(0, s.indexOf('/') + 2).includes('//')) {
+        // if so, try to create a new URL as node module
         const myUrl = new URL(s)
+        // check that the url string contains a protocol and that the hostname includes a '.'
         if (myUrl.protocol && myUrl.hostname.includes('.')) {
+          // make sure that IF the first dot is at index 3 of the hostname...
           if (myUrl.hostname.indexOf('.') === 3) {
+            // it must be preceded by 'www', not for example abc or xyz
             const sliced = myUrl.hostname.slice(0, 3)
             if (sliced.includes('www')) {
               return true
@@ -69,6 +74,7 @@ app.post('/api/shorturl', async (req, res) => {
     }
   }
 
+  // if the string does not hav a valid url format, return 'invalid url'
   if (isValidUrl(input) === false) {
     res.json({ error: 'invalid url' })
   } else {
