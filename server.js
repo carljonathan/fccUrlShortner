@@ -49,7 +49,7 @@ app.post('/api/shorturl', async (req, res) => {
   const input = req.body.url
   function isValidUrl(s) {
     try {
-      if (s.slice(0, indexOf('/') + 2).includes('//')) {
+      if (s.slice(0, s.indexOf('/') + 2).includes('//')) {
         const myUrl = new URL(s)
         if (myUrl.protocol && myUrl.hostname.includes('.')) {
           if (myUrl.hostname.indexOf('.') === 3) {
