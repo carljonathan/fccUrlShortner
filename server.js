@@ -58,8 +58,6 @@ app.post('/api/shorturl', async (req, res) => {
               return true
             }
             return false
-          } else if () {
-
           }
           return true
         }
